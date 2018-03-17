@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import io.neverstoplearning.advancedandroid.R;
 import io.neverstoplearning.advancedandroid.di.Injector;
 import io.neverstoplearning.advancedandroid.di.ScreenInjector;
+import io.neverstoplearning.advancedandroid.ui.ScreenNavigator;
 
 /**
  * Created by Марта on 16.03.2018.
@@ -31,9 +32,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     private Router router;
     @Inject
     ScreenInjector screenInjector;
+    @Inject
+    ScreenNavigator screenNavigator;
 
     @LayoutRes
     protected abstract int layoutRes();
+
+    protected abstract Controller initialScreen();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -49,6 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             throw new NullPointerException("Activity must have a view with id: screen_container");
         }
         router = Conductor.attachRouter(this, screenContainer, savedInstanceState);
+        screenNavigator.initWithRouter(router, initialScreen());
         monitorBackStack();
         super.onCreate(savedInstanceState, persistentState);
     }
@@ -64,8 +70,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (!screenNavigator.pop()){
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        screenNavigator.clear();
         if (isFinishing()) {
             Injector.clearComponent(this);
         }
