@@ -36,7 +36,7 @@ public abstract class Repo {
     @Json(name = "updated_at")
     public abstract ZonedDateTime updatedDate();
 
-    public static JsonAdapter<User> jsonAdapter(Moshi moshi){
-        return new AutoValue_User.MoshiJsonAdapter(moshi);
+    public static JsonAdapter<Repo> jsonAdapter(Moshi moshi){
+        return new AutoValue_Repo.MoshiJsonAdapter(moshi);
     }
 }

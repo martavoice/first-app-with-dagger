@@ -17,7 +17,7 @@ public abstract class Contributor {
     @Json(name = "avatar_url")
     public abstract String avatarUrl();
 
-    public static JsonAdapter<User> jsonAdapter(Moshi moshi) {
-        return new AutoValue_User.MoshiJsonAdapter(moshi);
+    public static JsonAdapter<Contributor> jsonAdapter(Moshi moshi) {
+        return new AutoValue_Contributor.MoshiJsonAdapter(moshi);
     }
 }
