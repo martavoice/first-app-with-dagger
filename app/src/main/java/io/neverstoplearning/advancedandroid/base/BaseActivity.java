@@ -27,53 +27,56 @@ import io.neverstoplearning.advancedandroid.ui.ScreenNavigator;
  */
 
 public abstract class BaseActivity extends AppCompatActivity {
-    public static String INSTANCE_ID_KEY = "instance_id";
+
+    private static final String INSTANCE_ID_KEY = "instance_id";
+
+    @Inject ScreenInjector screenInjector;
+    @Inject ScreenNavigator screenNavigator;
+
     private String instanceId;
     private Router router;
-    @Inject
-    ScreenInjector screenInjector;
-    @Inject
-    ScreenNavigator screenNavigator;
-
-    @LayoutRes
-    protected abstract int layoutRes();
-
-    protected abstract Controller initialScreen();
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             instanceId = savedInstanceState.getString(INSTANCE_ID_KEY);
         } else {
             instanceId = UUID.randomUUID().toString();
         }
         Injector.inject(this);
+
         setContentView(layoutRes());
         ViewGroup screenContainer = findViewById(R.id.screen_container);
         if (screenContainer == null) {
             throw new NullPointerException("Activity must have a view with id: screen_container");
         }
+
         router = Conductor.attachRouter(this, screenContainer, savedInstanceState);
         screenNavigator.initWithRouter(router, initialScreen());
         monitorBackStack();
-        super.onCreate(savedInstanceState, persistentState);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(INSTANCE_ID_KEY, instanceId);
     }
 
-    public String getInstanceId() {
-        return instanceId;
-    }
-
     @Override
     public void onBackPressed() {
-        if (!screenNavigator.pop()){
+        if (!screenNavigator.pop()) {
             super.onBackPressed();
         }
+    }
+
+    @LayoutRes
+    protected abstract int layoutRes();
+
+    protected abstract Controller initialScreen();
+
+    public String getInstanceId() {
+        return instanceId;
     }
 
     @Override
@@ -92,12 +95,22 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void monitorBackStack() {
         router.addChangeListener(new ControllerChangeHandler.ControllerChangeListener() {
             @Override
-            public void onChangeStarted(@Nullable Controller to, @Nullable Controller from, boolean isPush, @NonNull ViewGroup container, @NonNull ControllerChangeHandler handler) {
+            public void onChangeStarted(
+                    @Nullable Controller to,
+                    @Nullable Controller from,
+                    boolean isPush,
+                    @NonNull ViewGroup container,
+                    @NonNull ControllerChangeHandler handler) {
 
             }
 
             @Override
-            public void onChangeCompleted(@Nullable Controller to, @Nullable Controller from, boolean isPush, @NonNull ViewGroup container, @NonNull ControllerChangeHandler handler) {
+            public void onChangeCompleted(
+                    @Nullable Controller to,
+                    @Nullable Controller from,
+                    boolean isPush,
+                    @NonNull ViewGroup container,
+                    @NonNull ControllerChangeHandler handler) {
                 if (!isPush && from != null) {
                     Injector.clearComponent(from);
                 }

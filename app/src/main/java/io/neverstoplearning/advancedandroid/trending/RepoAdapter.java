@@ -16,12 +16,12 @@ import butterknife.ButterKnife;
 import io.neverstoplearning.advancedandroid.R;
 import io.neverstoplearning.advancedandroid.models.Repo;
 
-public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder> {
+class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder> {
 
     private final RepoClickListener listener;
     private final List<Repo> data = new ArrayList<>();
 
-    public RepoAdapter(RepoClickListener listener) {
+    RepoAdapter(RepoClickListener listener) {
         this.listener = listener;
         setHasStableIds(true);
     }
@@ -42,29 +42,39 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
         return data.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return data.get(position).id();
+    }
+
     void setData(List<Repo> repos) {
         if (repos != null) {
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new RepoDiffCallback(data, repos));
             data.clear();
             data.addAll(repos);
             diffResult.dispatchUpdatesTo(this);
+        } else {
+            data.clear();
+            notifyDataSetChanged();
         }
-
     }
 
-    class RepoViewHolder extends RecyclerView.ViewHolder {
+    public interface RepoClickListener {
+        void onRepoClicked(Repo repo);
+    }
+
+    static final class RepoViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_repo_name)
-        TextView repoName;
+        TextView repoNameText;
         @BindView(R.id.tv_repo_description)
-        TextView repoDescription;
+        TextView repoDescriptionText;
         @BindView(R.id.tv_fork_count)
-        TextView forkCount;
+        TextView forkCountText;
         @BindView(R.id.tv_star_count)
-        TextView starCount;
+        TextView starCountText;
 
         private Repo repo;
-        private RepoClickListener listener;
 
         RepoViewHolder(View itemView, RepoClickListener listener) {
             super(itemView);
@@ -76,17 +86,12 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
             });
         }
 
-        public void bind(Repo repo) {
+        void bind(Repo repo) {
             this.repo = repo;
-            repoName.setText(repo.name());
-            repoDescription.setText(repo.description());
-            forkCount.setText(NumberFormat.getInstance().format(repo.forksCount()));
-            starCount.setText(NumberFormat.getInstance().format(repo.stargazersCount()));
+            repoNameText.setText(repo.name());
+            repoDescriptionText.setText(repo.description());
+            forkCountText.setText(NumberFormat.getInstance().format(repo.forksCount()));
+            starCountText.setText(NumberFormat.getInstance().format(repo.stargazersCount()));
         }
-
-    }
-
-    interface RepoClickListener {
-        void onRepoClicked(Repo repo);
     }
 }

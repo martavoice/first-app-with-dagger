@@ -6,14 +6,14 @@ import java.util.List;
 
 import io.neverstoplearning.advancedandroid.models.Repo;
 
-class RepoDiffCallback extends DiffUtil.Callback {
+public class RepoDiffCallback extends DiffUtil.Callback {
 
-    private List<Repo> oldList;
-    private List<Repo> newList;
+    private final List<Repo> oldList;
+    private final List<Repo> newList;
 
-    public RepoDiffCallback(List<Repo> data, List<Repo> repos) {
-        this.oldList = data;
-        this.newList = repos;
+    public RepoDiffCallback(List<Repo> oldList, List<Repo> newList) {
+        this.oldList = oldList;
+        this.newList = newList;
     }
 
     @Override

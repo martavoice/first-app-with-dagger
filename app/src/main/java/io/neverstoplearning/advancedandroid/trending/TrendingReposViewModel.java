@@ -48,10 +48,9 @@ class TrendingReposViewModel {
 
     Consumer<Throwable> onError() {
         return throwable -> {
-            Timber.e(throwable, "Error loading repos");
+            Timber.e(throwable, "Error loading Repos");
             errorRelay.accept(R.string.api_error_repos);
         };
     }
-
-
 }
+

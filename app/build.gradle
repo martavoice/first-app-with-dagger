@@ -46,6 +46,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "com.jakewharton.rxrelay2:rxrelay:$rxRelayVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
 
     implementation "com.bluelinelabs:conductor:$conductorVersion"
 

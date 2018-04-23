@@ -7,14 +7,13 @@ import io.neverstoplearning.advancedandroid.di.ScreenScope;
 import io.neverstoplearning.advancedandroid.models.Repo;
 
 @ScreenScope
-public class TrendingReposPresenter implements RepoAdapter.RepoClickListener {
+class TrendingReposPresenter implements RepoAdapter.RepoClickListener {
 
     private final TrendingReposViewModel viewModel;
     private final RepoRequester repoRequester;
 
     @Inject
     TrendingReposPresenter(TrendingReposViewModel viewModel, RepoRequester repoRequester) {
-
         this.viewModel = viewModel;
         this.repoRequester = repoRequester;
         loadRepos();

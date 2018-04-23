@@ -22,17 +22,13 @@ import io.reactivex.disposables.Disposable;
  */
 
 public class TrendingReposController extends BaseController {
-    @Inject
-    TrendingReposPresenter presenter;
-    @Inject
-    TrendingReposViewModel viewModel;
 
-    @BindView(R.id.repo_list)
-    RecyclerView repoList;
-    @BindView(R.id.tv_error)
-    TextView errorText;
-    @BindView(R.id.loading_indicator)
-    ProgressBar loadingView;
+    @Inject TrendingReposPresenter presenter;
+    @Inject TrendingReposViewModel viewModel;
+
+    @BindView(R.id.repo_list) RecyclerView repoList;
+    @BindView(R.id.loading_indicator) View loadingView;
+    @BindView(R.id.tv_error) TextView errorText;
 
     @Override
     protected void onViewBound(View view) {
@@ -53,14 +49,13 @@ public class TrendingReposController extends BaseController {
                 viewModel.repos()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(((RepoAdapter)repoList.getAdapter())::setData),
-
                 viewModel.error()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(errorRes -> {
                     if (errorRes == -1) {
-                        errorText.setVisibility(View.GONE);
                         errorText.setText(null);
-                    }else {
+                        errorText.setVisibility(View.GONE);
+                    } else {
                         errorText.setVisibility(View.VISIBLE);
                         repoList.setVisibility(View.GONE);
                         errorText.setText(errorRes);
